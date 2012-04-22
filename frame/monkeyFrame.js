@@ -1,9 +1,5 @@
 
 $(document).ready(function(){
-	var domDecoder = null;
-	var socket = io.connect();
-	var capturer = new EventCapturer( socket );
-
 	// get the hashparams
 	var hashSegments = window.location.href.slice( window.location.href.indexOf( '#' ) + 1 ).split( '&' );
 	var hashParams = new StrMap();
@@ -13,6 +9,12 @@ $(document).ready(function(){
 	}
 
 	var tabId = hashParams.get('t') || generateId();
+
+
+	var domDecoder = null;
+	var socket = io.connect();
+	var capturer = new EventCapturer(socket, tabId);
+
 
 	socket.on('connect', function() {
 

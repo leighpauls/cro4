@@ -11,7 +11,7 @@ socket.on('connect', function() {
 		var inputListener = function(inputEvent) {
 			if (inputEvent.tabId === tabId) {
 				port.postMessage({
-					'input-event': inputEvent
+					inputEvent: inputEvent
 				});
 			}
 		};
