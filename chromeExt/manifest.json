@@ -1,0 +1,21 @@
+{
+    "name": "CrO4",
+	"version": "0.0",
+	"description": "Many devices, one browser.",
+	"content_scripts": [{
+		"matches": ["*://*/*"],
+		"exclude_globs": ["http://cro4.com/*", "https://cro4.com/*"],
+		"js": [
+			"jquery-1.7.1.js", 
+			"jquery.simulate.js",
+			"common.js",
+			"EventDispatcher.js",
+			"DiffDomEncoder.js",
+			"contentScript.js"
+		]
+	}],
+    "permissions": [
+		"http://cro4.com/"
+	],
+    "background_page": "background.html"
+}

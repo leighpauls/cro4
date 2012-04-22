@@ -1,0 +1,33 @@
+<html>
+  <head>
+	<link rel="stylesheet" type="text/css" href="monkeyBrowser.css" />
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/common/jquery-1.7.1.js"></script>
+	<script src="/common/generateId.js"></script>
+	<script src="/common/StrMap.js"></script>
+	<script src="/browser/Tab.js"></script>
+	<script src="/browser/TabManager.js"></script>
+	<script src="/browser/monkeyBrowser.js"></script>
+  </head>
+  <body>
+	<div class="browser-bar">
+	  <div class="tab-row">
+		<div class="tab-list helem"></div>
+		<div class="new-tab-button helem">
+		  New Tab
+		</div>
+	  </div>
+	  <div class="vspacer" style="height: 5px;"></div>
+	  <div class="control-row">
+		<div class="back-button helem">
+		  Back
+		</div>
+		<div class="forward-button helem">
+		  Fwd
+		</div>
+		<input type="text" class="omni-box helem" />
+	  </div>
+	</div>
+	<div class="frame-area"></div>
+  </body>
+</html>
