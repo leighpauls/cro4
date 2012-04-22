@@ -47,6 +47,10 @@ socket.on('connect', function() {
 		});
 	});
 
+	socket.on('please-report-tabs', function(pleaseReportInfo) {
+		
+	});
+
 });
 
 

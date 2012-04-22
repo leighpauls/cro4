@@ -4,7 +4,7 @@
 	"description": "Many devices, one browser.",
 	"content_scripts": [{
 		"matches": ["*://*/*"],
-		"exclude_globs": ["http://cro4.com/*", "https://cro4.com/*"],
+		"exclude_globs": ["*://cro4.com/*"],
 		"js": [
 			"jquery-1.7.1.js", 
 			"jquery.simulate.js",

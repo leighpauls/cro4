@@ -17,7 +17,13 @@ exports.handleSocket = function(socket) {
 
 	socket.on('tab-created', function(tabInfo) {
 		utils.forEachBut(browserSockets, socket, function (soc) {
-				soc.emit('tab-created', tabInfo);
+			soc.emit('tab-created', tabInfo);
+		});
+	});
+
+	socket.on('browser-opened', function(browserInfo) {
+		utils.forEachBut(browserSocket, socket, function(soc) {
+			sock.emit('please-report-tabs', {});
 		});
 	});
 

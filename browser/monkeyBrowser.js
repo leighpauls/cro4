@@ -10,6 +10,6 @@ $(document).ready(function () {
 
 
 	// Tell the server that I need tid's
-	socket.emit("browser-opened");
+	socket.emit("browser-opened", {});
 
 });
