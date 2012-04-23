@@ -30,6 +30,13 @@ $(document).ready(function(){
 			}
 		});
 
+		socket.on('diff-partial-init', function(diffPartialInit) {
+			if (null === domDecoder && tabId === diffPartialInit.tabId) {
+				// I'm actually expecting this partial
+				domDecoder = new DiffDomDecoder(diffPartialInit, capturer);
+			}
+		});
+
 		socket.on('diff-update', function(diffUpdate) {
 			domDecoder.update(diffUpdate.diff);
 		});

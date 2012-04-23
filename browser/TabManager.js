@@ -20,7 +20,9 @@ TabManager.prototype.prepareSocket = function(socket) {
 		var tabIds = reportTabInfo.tabIds
 		, i;
 		for ( i = 0; i < tabIds.length; ++i) {
-			me.createTab(tabIds[i]);
+			if (!me.hasTab(tabIds[i])) {
+				me.createTab(tabIds[i]);
+			}
 		}
 	});
 	
@@ -31,6 +33,10 @@ TabManager.prototype.prepareSocket = function(socket) {
 
 	// ask the server to give me the tabs
 	this.socket.emit("browser-opened", {});
+};
+
+TabManager.prototype.hasTab = function(tabId) {
+	return this.tabs.get(tabId) ? true : false;
 };
 
 TabManager.prototype.createTab = function(tabId) {

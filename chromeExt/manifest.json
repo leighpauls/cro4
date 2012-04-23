@@ -8,7 +8,7 @@
 		"js": [
 			"jquery-1.7.1.js", 
 			"jquery.simulate.js",
-			"common.js",
+			"common/generateId.js",
 			"EventDispatcher.js",
 			"DiffDomEncoder.js",
 			"contentScript.js"

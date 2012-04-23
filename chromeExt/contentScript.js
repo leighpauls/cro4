@@ -6,7 +6,7 @@ $(document).ready(function () {
 	});
 			
 	chrome.extension.sendRequest({
-		'diffDomInit': encoder.getDiffInit()
+		'diffInit': encoder.getDiffInit()
 	});
 
 	var port = chrome.extension.connect();
@@ -15,6 +15,11 @@ $(document).ready(function () {
 			if (request.inputEvent) {
 				console.log(request.inputEvent);
 				dispatcher.applyEvent(request.inputEvent);
+			}
+			if (request.pleasePartialInit) {
+				chrome.extension.sendRequest({
+					'diffPartialInit': encoder.partialInit()
+				});
 			}
 		}
 	});
@@ -26,7 +31,7 @@ $(document).ready(function () {
 			diff = encoder.doDiff();
 			console.log(diff);
 			chrome.extension.sendRequest({
-				'diffDomUpdate': { diff: diff }
+				'diffUpdate': { diff: diff }
 			});
 		}
 	});

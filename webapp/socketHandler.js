@@ -22,8 +22,14 @@ exports.handleSocket = function(socket) {
 	});
 
 	socket.on('browser-opened', function(browserInfo) {
-		utils.forEachBut(browserSocket, socket, function(soc) {
-			sock.emit('please-report-tabs', {});
+		utils.forEachBut(browserSockets, socket, function(soc) {
+			soc.emit('please-report-tabs', {});
+		});
+	});
+
+	socket.on('report-tabs', function(tabsInfo) {
+		utils.forEachBut(browserSockets, socket, function(soc) {
+			soc.emit('report-tabs', tabsInfo);
 		});
 	});
 

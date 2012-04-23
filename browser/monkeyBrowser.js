@@ -8,8 +8,4 @@ $(document).ready(function () {
 	
 	tabManager.prepareSocket(socket);
 
-
-	// Tell the server that I need tid's
-	socket.emit("browser-opened", {});
-
 });

@@ -36,6 +36,23 @@ function DiffDomEncoder () {
 
 }
 
+DiffDomEncoder.prototype.partialInit = function() {
+	return {
+		headId: this.headJNode.id,
+		bodyId: this.bodyJNode.id,
+		diff: this.getLastFullStateDiff(),
+		ocs: location.origin,
+		path: location.pathname
+	};
+};
+
+DiffDomEncoder.prototype.getLastFullStateDiff = function() {
+	return [
+		DiffDomEncoder.getSendableDiffEntry(this.headJNode),
+		DiffDomEncoder.getSendableDiffEntry(this.bodyJNode)
+	];
+};
+
 DiffDomEncoder.prototype.getDomNodeFromId = function( id ) {
 	return this.jNodeMap[ id ].domNode;
 }
@@ -43,6 +60,29 @@ DiffDomEncoder.prototype.getDomNodeFromId = function( id ) {
 DiffDomEncoder.prototype.getDiffInit = function () {
 	return this.diffInit;
 }
+
+// removes the unsendable data (domNodes) and passes on the rest of the
+// data for update
+DiffDomEncoder.getSendableDiffEntry = function(jNode) {
+	var res = {},
+	name, i;
+
+	for (name in jNode) {
+		if ('domNode' === name) {
+			continue;
+		}
+		if ('children' === name) {
+			res.children = [];
+			for (i = 0; i < jNode.children.length; ++i) {
+				res.children.push(DiffDomEncoder.getSendableDiffEntry(jNode.children[i]));
+			}
+			continue;
+		}
+		res[name] = jNode[name];
+	}
+	return res;
+}
+
 
 DiffDomEncoder.prototype.doDiff = function() {
 	var diffList = [],
@@ -57,35 +97,13 @@ DiffDomEncoder.prototype.doDiff = function() {
 
 		if (compareAndUpdate(jNode)) {
 			// update the entire subtree
-			diffList.push(getSendableDiffEntry(jNode));
+			diffList.push(DiffDomEncoder.getSendableDiffEntry(jNode));
 		} else if ('elem' === jNode.nodeType) {
 			// no changes, recurse over all the children
 			for (i = 0; i < jNode.children.length; ++i) {
 				diffNode(jNode.children[i]);
 			}
 		}
-	}
-
-    // removes the unsendable data (domNodes) and passes on the rest of the \
-	// data for update
-	function getSendableDiffEntry(jNode) {
-		var res = {},
-		name, i;
-
-		for (name in jNode) {
-			if ('domNode' === name) {
-				continue;
-			}
-			if ('children' === name) {
-				res.children = [];
-				for (i = 0; i < jNode.children.length; ++i) {
-					res.children.push(getSendableDiffEntry(jNode.children[i]));
-				}
-				continue;
-			}
-			res[name] = jNode[name];
-		}
-		return res;
 	}
 
 	function compareAndUpdate(jNode) {

@@ -7,6 +7,10 @@ function StrMap() {
 }
 
 StrMap.prototype.put = function(key, val) {
+	if (key === undefined || key === null) {
+		throw "invalid key: " + key;
+	}
+
 	var safeKey = 'k_' + key;
 	this.map[safeKey] = val;
 	this.keyPos[safeKey] = this.keys.length;
@@ -14,14 +18,26 @@ StrMap.prototype.put = function(key, val) {
 }
 
 StrMap.prototype.get = function(key) {
+	if (key === undefined || key === null) {
+		throw "invalid key: " + key;
+	}
+
 	return this.map['k_' + key];
 };
 
 StrMap.prototype.remove = function(key) {
+	if (key === undefined || key === null) {
+		throw "invalid key: " + key;
+	}
 	var safeKey = 'k_' + key
 	, keyPos = this.keyPos[safeKey];
-	delete this.keyPos[safeKey];
-	delete this.map[safeKey];
+
+	if (keyPos === undefined) {
+		throw "unknown key: " + key;
+	}
+
+	this.keyPos[safeKey] = undefined;
+	this.map[safeKey] = undefined;
 	
 	this.keys.splice(keyPos, 1);
 };
