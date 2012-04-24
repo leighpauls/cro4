@@ -3,9 +3,8 @@
 $(document).ready(function () {
 	
 
-	var socket = io.connect("http://cro4.com")
-	, tabManager = new TabManager();
+	var socket = io.connect("http://cro4.com");
+	var tabManager = new TabManager(socket);
+	var historyControls = new HistoryControls(tabManager, socket);
 	
-	tabManager.prepareSocket(socket);
-
 });

@@ -1,3 +1,5 @@
+// TODO: RE-WRITE THE VILE PIECE OF SHIT THAT IS THIS FILE!!!!!!!!
+
 var socket = io.connect('http://cro4.com');
 socket.on('connect', function() {
 
@@ -92,6 +94,18 @@ socket.on('connect', function() {
 		var tabId = pleaseCloseInfo.tabId;
 		if (tabId) {
 			chrome.tabs.remove(ports.get(tabId).tab.id);
+		}
+	});
+
+	socket.on('history-move', function(historyInfo) {
+		var tabId = historyInfo.tabId;
+		if (tabId) {
+			var port = ports.get(tabId);
+			if (port) {
+				port.postMessage({
+					historyMove: historyInfo
+				});
+			}
 		}
 	});
 

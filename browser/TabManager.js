@@ -1,20 +1,13 @@
-function TabManager() {
+function TabManager(socket) {
 	var me = this;
 	this.tabs = new StrMap();
-	this.socket = null;
+	this.socket = socket;
 	this.currentTab = null;
 
 	this.newTabButton = $('.new-tab-button')
 		.on('click', function() {
 			me.createTab();
 		});
-}
-
-// loads the events into the socket that need to be handled here
-TabManager.prototype.prepareSocket = function(socket) {
-	var me = this;
-	
-	this.socket = socket;
 	
 	socket.on("report-tabs", function(reportTabInfo) {
 		var tabIds = reportTabInfo.tabIds
@@ -33,7 +26,7 @@ TabManager.prototype.prepareSocket = function(socket) {
 
 	// ask the server to give me the tabs
 	this.socket.emit("browser-opened", {});
-};
+}
 
 TabManager.prototype.hasTab = function(tabId) {
 	return this.tabs.get(tabId) ? true : false;
@@ -105,4 +98,8 @@ TabManager.prototype.closeTab = function(tabId) {
 
 	// forget the tab
 	this.tabs.remove(tabId);
+};
+
+TabManager.prototype.getCurrentTabId = function() {
+	return this.currentTab.getTabId();
 };

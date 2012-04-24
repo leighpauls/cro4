@@ -21,6 +21,9 @@ $(document).ready(function () {
 					'diffPartialInit': encoder.partialInit()
 				});
 			}
+			if (request.historyMove) {
+				history.go(request.historyMove.dist);
+			}
 		}
 	});
 	

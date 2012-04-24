@@ -64,3 +64,10 @@ input-event: {
 	type: string, // dom event type
 	// other event-specific info, determined by the type...
 }
+
+// move the boss forward/back
+// browser -> webapp -> relay
+history-forward: {
+	tabId: id,
+	dist: Number // the distance to move the browser
+}

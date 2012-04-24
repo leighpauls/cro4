@@ -30,6 +30,7 @@ exports.handleSocket = function(socket) {
         });
     });
 
+	relayToOthers('history-move');
 	relayToOthers('tab-created');
 	relayToOthers('please-close-tab');
 	relayToOthers('tab-closed');
