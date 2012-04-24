@@ -27,8 +27,8 @@ TabManager.prototype.prepareSocket = function(socket) {
 	});
 	
 	// when another browser closes a tab
-	socket.on("close-tab", function(closeInfo) {
-		this.closeTab(closeInfo.tabId);
+	socket.on("tab-closed", function(closeInfo) {
+		me.closeTab(closeInfo.tabId);
 	});
 
 	// ask the server to give me the tabs
@@ -54,6 +54,10 @@ TabManager.prototype.createTab = function(tabId) {
 			me.selectTab(tabId);
 		},
 		closeTab: function () {
+			// tell the boss that the tab is closing
+			me.socket.emit("please-close-tab", {
+				tabId: tabId
+			});
 			me.closeTab(tabId);
 		}
 	});
@@ -101,9 +105,4 @@ TabManager.prototype.closeTab = function(tabId) {
 
 	// forget the tab
 	this.tabs.remove(tabId);
-
-	// tell the boss that the tab is closing
-	this.socket.emit("close-tab", {
-		tabId: tabId
-	});
 };

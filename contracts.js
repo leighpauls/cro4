@@ -11,8 +11,15 @@ report-tabs: {
 please-report-tabs: {}
 
 // Tell the world that a tab has closed
-// browser -> webapp -> browser
-close-tab: {
+// typically as a response to please-close-tab
+// relay -> webapp -> browser
+tab-closed: {
+	tabId: id
+}
+
+// ask the boss to close a tab
+// browser -> webapp -> relay
+please-close-tab: {
 	tabId: id
 }
 

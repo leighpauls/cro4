@@ -5,12 +5,15 @@ socket.on('connect', function() {
 	var tabIdLookup = new StrMap();
 	// ports indexed by tabId
 	var ports = new StrMap();
-	
 	var tabsExist = new StrMap();
 
 	chrome.tabs.onRemoved.addListener(function(chromeTabId) {
-		tabsExist.put(tabIdLookup.get(chromeTabId), false);
-		tabIdLookup.remove(chromeTabId);
+		var tabId = tabIdLookup.get(chromeTabId);
+		if (tabId) { // may be null if it's not a tab that I made
+			socket.emit('tab-closed', { tabId: tabId });
+			tabsExist.put(tabId, false);
+			tabIdLookup.remove(chromeTabId);
+		}
 	});
 	
 	// a tab has just connected to me for it's input stream
@@ -58,9 +61,13 @@ socket.on('connect', function() {
 		if (tabsExist.get(tabInfo.tabId)) {
 			var port = ports.get(tabInfo.tabId);
 			// tab already exists here, just tell it to re-init
-			port.postMessage({
-				pleasePartialInit: {}
-			});
+			if (port) {
+				// if there is a port, I need to re-init,
+				// otherwise, there's an init comming
+				port.postMessage({
+					pleasePartialInit: {}
+				});
+			}
 		} else {
 			// new tab, I need to create it here
 			chrome.tabs.create({
@@ -79,6 +86,13 @@ socket.on('connect', function() {
 
 	socket.on('please-report-tabs', function(pleaseReportInfo) {
 		reportTabs(pleaseReportInfo);
+	});
+
+	socket.on('please-close-tab', function(pleaseCloseInfo) {
+		var tabId = pleaseCloseInfo.tabId;
+		if (tabId) {
+			chrome.tabs.remove(ports.get(tabId).tab.id);
+		}
 	});
 
 	function reportTabs(pleaseReportInfo) {

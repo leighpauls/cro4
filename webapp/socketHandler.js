@@ -15,23 +15,25 @@ exports.handleSocket = function(socket) {
 	diffDom.handleConnection( socket, browserSockets );
 	eventHandler.handleConnection( socket, browserSockets );
 
-	socket.on('tab-created', function(tabInfo) {
-		utils.forEachBut(browserSockets, socket, function (soc) {
-			soc.emit('tab-created', tabInfo);
+	// handle the generic pass-it-on events
+	function relayToOthers(eventName) {
+		socket.on(eventName, function (eventInfo) {
+			utils.forEachBut(browserSockets, socket, function (soc) {
+				soc.emit(eventName, eventInfo);
+			});
 		});
-	});
+	}
 
 	socket.on('browser-opened', function(browserInfo) {
-		utils.forEachBut(browserSockets, socket, function(soc) {
-			soc.emit('please-report-tabs', {});
-		});
-	});
+        utils.forEachBut(browserSockets, socket, function(soc) {
+            soc.emit('please-report-tabs', {});
+        });
+    });
 
-	socket.on('report-tabs', function(tabsInfo) {
-		utils.forEachBut(browserSockets, socket, function(soc) {
-			soc.emit('report-tabs', tabsInfo);
-		});
-	});
+	relayToOthers('tab-created');
+	relayToOthers('please-close-tab');
+	relayToOthers('tab-closed');
+	relayToOthers('report-tabs');
 
 	// connection closed
 	socket.on('disconnect', function() {

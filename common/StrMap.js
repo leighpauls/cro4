@@ -49,3 +49,7 @@ StrMap.prototype.length = function() {
 StrMap.prototype.atIndex = function(i) {
 	return this.map['k_' + this.keys[i]];
 };
+
+StrMap.prototype.keyAtIndex = function(i) {
+	return this.keys[i];
+};
