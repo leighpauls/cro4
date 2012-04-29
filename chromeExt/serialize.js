@@ -36,20 +36,3 @@ function serializeXml(node) {
 	return null;
 }
 
-function doReportForever() {
-	var fullReport = {
-		"head": serializeXml(document.head),
-		"body": serializeXml(document.body),
-		"ocs": document.location.origin, // origin content server
-		"path": document.location.pathname // path to base relative to OCS
-	};
-	chrome.extension.sendRequest({ 'reportDom': fullReport });
-	//window.setTimeout(doReportForever, 2000);
-}
-
-
-$(document).ready(function() {
-	window.setTimeout(doReportForever, 1000);
-	//doReportForever();
-
-});

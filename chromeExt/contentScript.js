@@ -4,12 +4,12 @@ $(document).ready(function () {
 	var dispatcher = new EventDispatcher(function(id) {
 		return encoder.getDomNodeFromId(id);
 	});
-			
-	chrome.extension.sendRequest({
+
+	var port = chrome.extension.connect();
+	port.postMessage({
 		'diffInit': encoder.getDiffInit()
 	});
 
-	var port = chrome.extension.connect();
 	port.onMessage.addListener(function(request, sender) {
 		if (request) {
 			if (request.inputEvent) {
@@ -17,7 +17,7 @@ $(document).ready(function () {
 				dispatcher.applyEvent(request.inputEvent);
 			}
 			if (request.pleasePartialInit) {
-				chrome.extension.sendRequest({
+				port.postMessahe({
 					'diffPartialInit': encoder.partialInit()
 				});
 			}
@@ -33,7 +33,7 @@ $(document).ready(function () {
 		if (119 === e.keyCode && encoder) {
 			diff = encoder.doDiff();
 			console.log(diff);
-			chrome.extension.sendRequest({
+			port.postMessage({
 				'diffUpdate': { diff: diff }
 			});
 		}

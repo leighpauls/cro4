@@ -28,6 +28,16 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 		var tagName;
 		if (diffEntry.nodeType === 'elem') {
 			tagName = diffEntry.tagName;
+
+			// some tags will have an attirbute as the name, something is fubar'd about it
+			// (google maps problem as of 29/04/2012)
+			var equalsIndex = tagName.indexOf('=');
+			if (equalsIndex >= 0) {
+				// just throw away the attribute and use it as a tag title
+				tagName = tagName.substr(0, equalsIndex);
+				diffEntry.tagName = tagName;
+			}
+
 			// I only care about elements
 			if (tagName.toLowerCase() === 'script') {
 				// I'm script, remove me
@@ -35,7 +45,6 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 			}
 	
 			scrapeAttributes(diffEntry);
-			
 
 			// look at the inside of a <style> tag
 			if ('style' === diffEntry.tagName.toLowerCase()) {
