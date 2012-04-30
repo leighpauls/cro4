@@ -10,6 +10,7 @@ $(document).ready(function () {
 		'diffInit': encoder.getDiffInit()
 	});
 
+
 	port.onMessage.addListener(function(request, sender) {
 		if (request) {
 			if (request.inputEvent) {
@@ -26,16 +27,13 @@ $(document).ready(function () {
 			}
 		}
 	});
-	
-	$(document.body).keypress(function(e) {
-		var diff;
-		
-		if (119 === e.keyCode && encoder) {
-			diff = encoder.doDiff();
-			console.log(diff);
-			port.postMessage({
-				'diffUpdate': { diff: diff }
-			});
-		}
+
+	$(document.body).on('DOMSubtreeModified', function (e) {
+		var diff = encoder.doDiff();
+		console.log(diff);
+		port.postMessage({
+			'diffUpdate': { diff: diff }
+		});
 	});
+	
 });

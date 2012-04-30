@@ -84,6 +84,6 @@ BossTab.prototype.addListeners = function() {
 		this.socket.removeListener('input-event', monkeyInputListener);
 		this.socket.removeListener('please-report-tabs', reportTabsListener);
 		this.socket.removeListener('please-close-tab', closeTabListener);
-		this.socekt.removeListener('history-move', historyMoveListener);
+		this.socket.removeListener('history-move', historyMoveListener);
 	}
 };
