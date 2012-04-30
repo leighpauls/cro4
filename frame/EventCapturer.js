@@ -12,9 +12,6 @@ EventCapturer.prototype.attachToNode = function ( domNode, id ) {
 	// TODO: find the rest of the events to be handled here
 	$(domNode).on('mousedown mouseup click', function (e) {
 		if (e.target === e.currentTarget) {
-			console.log("Base Event ID: " + id);
-			console.log(e);
-
 			// TODO: send data based on the event type
 			soc.emit( 'input-event', { 
 				tabId: tabId,

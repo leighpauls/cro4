@@ -61,7 +61,6 @@ DiffDomDecoder.prototype.update = function (diffList) {
 	var nodeMap = this.nodeMap,
 	capturer = this.capturer,
 	i;
-	//console.log(diffList);
 
 	for (i = 0; i < diffList.length; ++i) {
 		updateNode(diffList[i]);

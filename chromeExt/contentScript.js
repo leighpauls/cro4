@@ -14,7 +14,6 @@ $(document).ready(function () {
 	port.onMessage.addListener(function(request, sender) {
 		if (request) {
 			if (request.inputEvent) {
-				console.log(request.inputEvent);
 				dispatcher.applyEvent(request.inputEvent);
 			}
 			if (request.pleasePartialInit) {
@@ -30,7 +29,6 @@ $(document).ready(function () {
 
 	$(document.body).on('DOMSubtreeModified', function (e) {
 		var diff = encoder.doDiff();
-		console.log(diff);
 		port.postMessage({
 			'diffUpdate': { diff: diff }
 		});
