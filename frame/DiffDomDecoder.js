@@ -49,11 +49,13 @@ DiffDomDecoder.prototype.configureRootNodes = function( diffInit ) {
 		domNode: document.head,
 		id: diffInit.headId
 	};
+	this.headId = diffInit.headId;
 	this.nodeMap[diffInit.bodyId] = {
 		isElem: true,
 		domNode: document.body,
 		id: diffInit.bodyId
 	};
+	this.bodyId = diffInit.bodyId;
 };
 
 // updates the DOM and local data according to the diff

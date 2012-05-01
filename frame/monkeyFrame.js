@@ -20,17 +20,20 @@ $(document).ready(function(){
 
 		socket.on('diff-init', function(diffInit) {
 			if (null === domDecoder) {
+				// TODO: filter events at a higher level
 				if (tabId === diffInit.tabId) {
 					// Make a new diffDomDecoder if I don't have one yet
 					domDecoder = new DiffDomDecoder(diffInit, capturer);
 				}
 			} else {
+				// TODO: filter events at a higher level
 				// otherwise, see if it's a page change
 				domDecoder.tryReinit(diffInit);
 			}
 		});
 
 		socket.on('diff-partial-init', function(diffPartialInit) {
+			// TODO: filter events at a higher level
 			if (null === domDecoder && tabId === diffPartialInit.tabId) {
 				// I'm actually expecting this partial
 				domDecoder = new DiffDomDecoder(diffPartialInit, capturer);
@@ -38,7 +41,10 @@ $(document).ready(function(){
 		});
 
 		socket.on('diff-update', function(diffUpdate) {
-			domDecoder.update(diffUpdate.diff);
+			// TODO: filter events at a higher level
+			if (tabId === diffUpdate.tabId) {
+				domDecoder.update(diffUpdate.diff);
+			}
 		});
 
 		// request the tab to be created
