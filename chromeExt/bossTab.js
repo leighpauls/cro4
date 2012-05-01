@@ -11,7 +11,7 @@ function BossTab(tabInfo, socket, onCloseCb) {
 	var me = this;
 
 	chrome.tabs.create({
-		url: 'http://google.com',
+		url: 'http://reddit.com',
 		active: false
 	}, function (chromeTab) {
 		me.chromeTab = chromeTab;

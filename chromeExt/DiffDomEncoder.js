@@ -1,30 +1,21 @@
 
-function DiffDomEncoder () {
+function DiffDomEncoder (updateHandler) {
+
+	this.updateHandler = updateHandler;
+	// a queue of nodes which should be diff'ed on the next cycle
+	this.modifiedNodes = [];
 
 	// start with the jnode of a blank page
-	var headId = generateId();
-	this.headJNode = {
-		nodeType: 'elem',
-		attr: {},
-		children: [],
-		domNode: document.head,
-		id: headId,
-		tagName: 'head'
-	};
-	var bodyId = generateId();
-	this.bodyJNode = {
-		nodeType: 'elem',
-		attr: {},
-		children: [],
-		domNode: document.body,
-		id: bodyId,
-		tagName: 'body'
-	}
+	this.headJNode = this.createJNodeElement(document.head);
+	var headId = this.headJNode.id;
 
-	this.jNodeMap = {
-		headId: this.headJNode,
-		bodyId: this.bodyJNode
-	};
+	this.bodyJNode = this.createJNodeElement(document.body);
+	var bodyId = this.bodyJNode.id;
+
+	this.jNodeMap = {};
+	this.jNodeMap[headId] = this.headJNode;
+	this.jNodeMap[bodyId] = this.bodyJNode;
+
 
 	this.diffInit = {
 		headId: headId,
@@ -34,7 +25,22 @@ function DiffDomEncoder () {
 		path: location.pathname
 	};
 
+	this.doUpdateCycle();
 }
+
+DiffDomEncoder.prototype.doUpdateCycle = function() {
+	var me = this,
+	nextJNode;
+	
+	if (this.modifiedNodes.length > 0) {
+		this.updateHandler(this.doDiff(this.modifiedNodes));
+	}
+	this.modifiedNodes = [];
+	
+	setTimeout(function() {
+		me.doUpdateCycle();
+	}, 500);
+};
 
 DiffDomEncoder.prototype.partialInit = function() {
 	return {
@@ -84,12 +90,17 @@ DiffDomEncoder.getSendableDiffEntry = function(jNode) {
 }
 
 
-DiffDomEncoder.prototype.doDiff = function() {
+DiffDomEncoder.prototype.doDiff = function(rootJNodes) {
 	var diffList = [],
-	jNodeMap = this.jNodeMap;
+	jNodeMap = this.jNodeMap,
+	me = this;
 
-	diffNode(this.headJNode);
-	diffNode(this.bodyJNode);
+	rootJNodes = rootJNodes || [this.headJNode, this.bodyJNode];
+
+	for (var q = 0; q < rootJNodes.length; ++q) {
+		diffNode(rootJNodes[q]);
+	}
+
 	return diffList;
 
 	function diffNode(jNode) {
@@ -197,6 +208,10 @@ DiffDomEncoder.prototype.doDiff = function() {
 
 		// TODO: figure out how to prune the jNodeMap without leaving hanging ID's
 		// over a network-round-trip-time input update period
+		// remove all of the event handlers
+		for (i = 0; i < jNode.children.length; ++i) {
+			$(jNode.children[i].domNode).unbind('DOMSubtreeModified', jNode.updateHandler);
+		}
 		jNode.children = [];
 
 		for (i = 0; i < domChildren.length; ++i) {
@@ -214,14 +229,7 @@ DiffDomEncoder.prototype.doDiff = function() {
 
 		if (1 === nodeType) {
 			// it's an element
-			res = {
-				id: generateId(),
-				nodeType: 'elem',
-				attr: {},
-				children: [],
-				domNode: domNode,
-				tagName: domNode.tagName
-			};
+			res = me.createJNodeElement(domNode);
 
 			// add to the global map
 			jNodeMap[res.id] = res;
@@ -229,12 +237,7 @@ DiffDomEncoder.prototype.doDiff = function() {
 			compareAndUpdateElement(res);
 		} else if (3 === nodeType) {
 			// it's a text node
-			res = {
-				id: generateId(),
-				domNode: domNode,
-				nodeType: 'text',
-				text: domNode.nodeValue
-			};
+			res = me.createJNodeText(domNode);
 
 			// add to the global map
 			jNodeMap[res.id] = res;
@@ -243,3 +246,41 @@ DiffDomEncoder.prototype.doDiff = function() {
 		return res;		
 	}
 };
+
+DiffDomEncoder.prototype.createJNodeElement = function(domNode) {
+	var me = this,
+	res = {
+		id: generateId(),
+		nodeType: 'elem',
+		attr: {},
+		children: [],
+		domNode: domNode,
+		tagName: domNode.tagName,
+		updateHandler: function(e) {
+			e.stopPropagation();
+			// update from this node
+			me.modifiedNodes.push(res);
+		}
+	};
+
+	$(domNode).on("DOMSubtreeModified", res.updateHandler);
+	return res;
+}
+
+DiffDomEncoder.prototype.createJNodeText = function(domNode) {
+	var me = this,
+	res = {
+		id: generateId(),
+		domNode: domNode,
+		nodeType: 'text',
+		text: domNode.nodeValue,
+		updateHandler: function(e) {
+			e.stopPropagation();
+			// update from this node
+			me.modifiedNodes.push(res);
+		}
+	};
+
+	$(domNode).on("DOMSubtreeModified", res.updateHandler);
+	return res;
+}

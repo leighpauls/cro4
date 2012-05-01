@@ -1,6 +1,11 @@
 $(document).ready(function () {
 
-	var encoder = new DiffDomEncoder();
+	var encoder = new DiffDomEncoder(function(diff) {
+		//console.log(diff);
+		port.postMessage({
+			'diffUpdate': { diff: diff }
+		});
+	});
 	var dispatcher = new EventDispatcher(function(id) {
 		return encoder.getDomNodeFromId(id);
 	});
@@ -27,11 +32,11 @@ $(document).ready(function () {
 		}
 	});
 
-	$(document.body).on('DOMSubtreeModified', function (e) {
+	/*$(document.body).on('DOMSubtreeModified', function (e) {
 		var diff = encoder.doDiff();
 		port.postMessage({
 			'diffUpdate': { diff: diff }
 		});
-	});
+	});*/
 	
 });
