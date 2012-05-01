@@ -22,7 +22,7 @@ $(document).ready(function () {
 				dispatcher.applyEvent(request.inputEvent);
 			}
 			if (request.pleasePartialInit) {
-				port.postMessahe({
+				port.postMessage({
 					'diffPartialInit': encoder.partialInit()
 				});
 			}
@@ -31,12 +31,4 @@ $(document).ready(function () {
 			}
 		}
 	});
-
-	/*$(document.body).on('DOMSubtreeModified', function (e) {
-		var diff = encoder.doDiff();
-		port.postMessage({
-			'diffUpdate': { diff: diff }
-		});
-	});*/
-	
 });

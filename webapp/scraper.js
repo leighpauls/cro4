@@ -25,7 +25,7 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 
 	// returns false if this node should be deleted
 	function scrapeSubtree(diffEntry) {
-		var tagName;
+		var tagName, lowerTagName;
 		if (diffEntry.nodeType === 'elem') {
 			tagName = diffEntry.tagName;
 
@@ -38,19 +38,25 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 				diffEntry.tagName = tagName;
 			}
 
+			lowerTagName = tagName.toLowerCase();
 			// I only care about elements
-			if (tagName.toLowerCase() === 'script') {
+			if (lowerTagName === 'script') {
 				// I'm script, remove me
 				return false;
 			}
 	
+			// TODO: need a more elegant way of handling iframes
+			if (lowerTagName === 'iframe') {
+				return false;
+			}
+
 			scrapeAttributes(diffEntry);
 
 			// look at the inside of a <style> tag
 			if ('style' === diffEntry.tagName.toLowerCase()) {
 				// look for any text node children, and absolutify them
 				for (var i = 0; i < diffEntry.children.length; ++i) {
-					if ('text' === diffEntry.children[i].type) {
+					if ('text' === diffEntry.children[i].nodeType) {
 						diffEntry.children[i].text = absolutifyStyle(diffEntry.children[i].text);
 					}
 				}
@@ -93,7 +99,7 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 
 	function absolutifyUrl(url) {
 		// if it is already absolute or a dumb javascript href
-		if ((/^(https?|javascript):\/\//g).test(url)) {
+		if ((/^(https?|javascript|data):/g).test(url)) {
 			return url;
 		}
 
@@ -129,6 +135,7 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 
 				// make an absolute URL
 				var rawUrl = style.substr(nextPoint, endPoint - nextPoint);
+				//debugger;
 				var absUrl = absolutifyUrl(rawUrl);
 
 				// splice the string to use the new url
@@ -151,6 +158,7 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 
 				// make an absolute URL
 				var rawUrl = style.substr(nextPoint, endPoint - nextPoint);
+				//debugger;
 				var absUrl = absolutifyUrl(rawUrl);
 
 				// splice the string to use the new url
@@ -173,6 +181,7 @@ exports.scrapeDiff = function (ocs, path, diffs, callback) {
 
 				// make an absolute URL
 				var rawUrl = style.substr(nextPoint, endPoint - nextPoint);
+				//debugger;
 				var absUrl = absolutifyUrl(rawUrl);
 
 				// splice the string to use the new url
