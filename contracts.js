@@ -45,7 +45,8 @@ diff-init: {
 	bodyId: id,
 	ocs: string,
 	path: string,
-	diff: [jNode]
+	diff: [jNode],
+	url: url
 }
 
 // a differential update for the frames with this tabId, for typical 
@@ -53,7 +54,8 @@ diff-init: {
 // boss -> relay -> webapp (scraped) -> frame
 diff-update: {
 	tabId: id
-	diff: [jNode]
+	diff: [jNode],
+	url: url
 }
 
 // user input event, as triggered by the user
@@ -70,4 +72,19 @@ input-event: {
 history-forward: {
 	tabId: id,
 	dist: Number // the distance to move the browser
+}
+
+// ask the boss to go to this url
+// browser -> webapp -> relay
+please-go-to-url: {
+	url: url,
+	tabId: id
+}
+
+// tell all the monkies what the url is
+// typically triggered by an init, partial init, or diff update
+// relay -> webapp -> browser
+report-tab-url: {
+	url: url,
+	tabId: id
 }

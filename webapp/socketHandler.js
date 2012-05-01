@@ -35,6 +35,7 @@ exports.handleSocket = function(socket) {
 	relayToOthers('please-close-tab');
 	relayToOthers('tab-closed');
 	relayToOthers('report-tabs');
+	relayToOthers('please-go-to-url');
 
 	// connection closed
 	socket.on('disconnect', function() {

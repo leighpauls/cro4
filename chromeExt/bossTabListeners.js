@@ -71,12 +71,21 @@ BossTab.prototype.addListeners = function() {
 		}
 	};
 
+	var goToUrlListener = function(urlInfo) {
+		if (me.tabId === urlInfo.tabId) {
+			chrome.tabs.update(me.chromeTab.id, {
+				url: urlInfo.url
+			});
+		}
+	};
+
 	chrome.tabs.onRemoved.addListener(tabRemovedListener);
 	chrome.extension.onConnect.addListener(portConnectListener);
 	this.socket.on('input-event', monkeyInputListener);
 	this.socket.on('please-report-tabs', reportTabsListener);
 	this.socket.on('please-close-tab', closeTabListener);
 	this.socket.on('history-move', historyMoveListener);
+	this.socket.on('please-go-to-url', goToUrlListener);
 
 	this.removeListeners = function() {
 		chrome.tabs.onRemoved.removeListener(tabRemovedListener);
@@ -85,5 +94,6 @@ BossTab.prototype.addListeners = function() {
 		this.socket.removeListener('please-report-tabs', reportTabsListener);
 		this.socket.removeListener('please-close-tab', closeTabListener);
 		this.socket.removeListener('history-move', historyMoveListener);
+		this.socket.removeListener('please-go-to-url', goToUrlListener);
 	}
 };
