@@ -35,11 +35,13 @@ function Tab(args) {
 Tab.prototype.select = function() {
 	// TODO: take control of the forward/back/omnibox
 	this.iframe.css('display', 'block');
+	this.tabTitle.addClass('selected-tab');
 };
 
 Tab.prototype.unselect = function() {
 	// TODO: release control of the forward/back/omnibox
 	this.iframe.css('display', 'none');
+	this.tabTitle.removeClass('selected-tab');
 };
 
 Tab.prototype.remove = function() {
