@@ -78,6 +78,8 @@ TabManager.prototype.selectTab = function(tabId) {
 	selectedTab.select();
 
 	this.currentTab = selectedTab;
+
+	$(this).trigger('tab-changed', tabId);
 };
 
 TabManager.prototype.closeTab = function(tabId) {

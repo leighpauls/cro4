@@ -3,6 +3,8 @@ function UrlBarControls(tabManager, socket) {
 	this.tabManager = tabManager;
 	this.socket = socket;
 
+	this.urls = new StrMap();
+
 	$('.omni-box').on('keydown', function(e) {
 		// on the return key
 		if (e.which == 13) {
@@ -10,9 +12,24 @@ function UrlBarControls(tabManager, socket) {
 		}
 	});
 
-	// TODO: ask the tab manager to call me whenever the tab has been changed
-	// so that i can change the url bar for that tab
+	this.socket.on('report-tab-url', function(urlInfo) {
+		me.urls.put(urlInfo.tabId, urlInfo.url);
+		if (me.tabManager.getCurrentTabId() === urlInfo.tabId) {
+			// I need to update the url immediately
+			me.setOmniValue(urlInfo.url);
+		}
+	});
+
+	// ask the tab manager to call me whenever the tab has been changed
+	$(this.tabManager).on('tab-changed', function(tabId) {
+		var newValue = me.urls.get(tabId) || "";
+		me.setOmniValue(newValue);
+	});
 }
+
+UrlBarControls.prototype.setOmniValue = function(newUrl) {
+	$('.omni-box').val(newUrl);
+};
 
 UrlBarControls.prototype.goToUrl = function(url) {
 	this.socket.emit('please-go-to-url', {

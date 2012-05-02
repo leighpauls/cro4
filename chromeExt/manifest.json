@@ -9,13 +9,15 @@
 			"jquery-1.7.1.js", 
 			"jquery.simulate.js",
 			"common/generateId.js",
+			"common/StrMap.js",
 			"EventDispatcher.js",
 			"DiffDomEncoder.js",
 			"contentScript.js"
 		]
 	}],
     "permissions": [
-		"http://cro4.com/"
+		"http://cro4.com/",
+		"tabs"
 	],
     "background_page": "background.html"
 }

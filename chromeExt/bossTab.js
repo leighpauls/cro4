@@ -3,8 +3,10 @@ function BossTab(tabInfo, socket, onCloseCb) {
 	this.socket = socket;
 	this.onCloseCb = onCloseCb;
 
-	this.chromeTab = null;
+	this.chromeTabId = null;
 	this.port = null;
+	
+	this.url = null;
 
 	this.addListeners();
 
@@ -14,9 +16,11 @@ function BossTab(tabInfo, socket, onCloseCb) {
 		url: 'http://google.com',
 		active: false
 	}, function (chromeTab) {
-		me.chromeTab = chromeTab;
-
+		me.chromeTabId = chromeTab.id;
 		me.reportSelf();
+
+		me.url = chromeTab.url;
+		me.sendUrlUpdate();
 	});
 }
 
@@ -26,6 +30,7 @@ BossTab.prototype.onBossOutput = function(request) {
 		if (request.diffUpdate) {
 			request.diffUpdate.tabId = this.tabId;
 			this.socket.emit('diff-update', request.diffUpdate);
+			this.sendUrlUpdate();
 		}
 		if (request.diffInit) {
 			request.diffInit.tabId = this.tabId;
@@ -34,6 +39,7 @@ BossTab.prototype.onBossOutput = function(request) {
 		if (request.diffPartialInit) {
 			request.diffPartialInit.tabId = this.tabId;
 			this.socket.emit('diff-partial-init', request.diffPartialInit);
+			this.sendUrlUpdate();
 		}
 	}
 };
@@ -51,4 +57,14 @@ BossTab.prototype.reportSelf = function() {
 	this.socket.emit('report-tabs', {
 		tabIds: [this.tabId]
 	});
+};
+
+BossTab.prototype.sendUrlUpdate = function() {
+	if (this.url) {
+		// only try to send if the url already exists
+		this.socket.emit('report-tab-url', {
+			url: this.url,
+			tabId: this.tabId
+		});
+	}
 };

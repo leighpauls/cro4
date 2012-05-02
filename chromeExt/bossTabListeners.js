@@ -12,7 +12,7 @@ BossTab.prototype.addListeners = function() {
 	
 	var tabRemovedListener = function(chromeTabId) {
 		// make sure that this close event is for me
-		if (chromeTabId === me.chromeTab.id) {
+		if (chromeTabId === me.chromeTabId) {
 			// tell the monkeys that I'm gone now
 			socket.emit('tab-closed', { tabId: me.tabId });
 
@@ -27,7 +27,7 @@ BossTab.prototype.addListeners = function() {
 	};
 
 	var portConnectListener = function(port) {
-		if (port.sender.tab.id === me.chromeTab.id) {
+		if (port.sender.tab.id === me.chromeTabId) {
 			// this is trying to connect to me
 			me.port = port;
 			port.onDisconnect.addListener(function() {
@@ -57,7 +57,7 @@ BossTab.prototype.addListeners = function() {
 	var closeTabListener = function(pleaseCloseInfo) {
 		if (me.tabId === pleaseCloseInfo.tabId) {
 			// it's actually trying to close me
-			chrome.tabs.remove(me.chromeTab.id);
+			chrome.tabs.remove(me.chromeTabId);
 		}
 	};
 
@@ -73,12 +73,23 @@ BossTab.prototype.addListeners = function() {
 
 	var goToUrlListener = function(urlInfo) {
 		if (me.tabId === urlInfo.tabId) {
-			chrome.tabs.update(me.chromeTab.id, {
+			chrome.tabs.update(me.chromeTabId, {
 				url: guardUrl(urlInfo.url)
 			});
 		}
 	};
 
+	var tabUpdatedListener = function(chromeTabId, changeInfo) {
+		if (me.chromeTabId === chromeTabId) {
+			if (changeInfo.url) {
+				// url is changed, tell the world
+				me.url = changeInfo.url;
+				me.sendUrlUpdate();
+			}
+		}
+	};
+
+	// TODO: replace this monstrosity with properly managed event listeners
 	chrome.tabs.onRemoved.addListener(tabRemovedListener);
 	chrome.extension.onConnect.addListener(portConnectListener);
 	this.socket.on('input-event', monkeyInputListener);
@@ -86,6 +97,7 @@ BossTab.prototype.addListeners = function() {
 	this.socket.on('please-close-tab', closeTabListener);
 	this.socket.on('history-move', historyMoveListener);
 	this.socket.on('please-go-to-url', goToUrlListener);
+	chrome.tabs.onUpdated.addListener(tabUpdatedListener);
 
 	this.removeListeners = function() {
 		chrome.tabs.onRemoved.removeListener(tabRemovedListener);
@@ -95,5 +107,6 @@ BossTab.prototype.addListeners = function() {
 		this.socket.removeListener('please-close-tab', closeTabListener);
 		this.socket.removeListener('history-move', historyMoveListener);
 		this.socket.removeListener('please-go-to-url', goToUrlListener);
+		chrome.tabs.onUpdated.removeListener(tabUpdatedListener);
 	}
 };
