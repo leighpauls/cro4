@@ -74,7 +74,7 @@ BossTab.prototype.addListeners = function() {
 	var goToUrlListener = function(urlInfo) {
 		if (me.tabId === urlInfo.tabId) {
 			chrome.tabs.update(me.chromeTab.id, {
-				url: urlInfo.url
+				url: guardUrl(urlInfo.url)
 			});
 		}
 	};
