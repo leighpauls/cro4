@@ -281,6 +281,6 @@ DiffDomEncoder.prototype.createJNodeText = function(domNode) {
 		}
 	};
 
-	$(domNode).on("DOMSubtreeModified", res.updateHandler);
+	$(domNode).on("DOMSubtreeModified DOMNodeRemoved", res.updateHandler);
 	return res;
 }
