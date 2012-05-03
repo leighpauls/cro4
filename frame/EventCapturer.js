@@ -6,27 +6,42 @@ function EventCapturer( soc, tabId ) {
 }
 
 EventCapturer.prototype.attachToNode = function ( domNode, id ) {
-	var tabId = this.tabId;
-	var soc = this.soc;
-	
-	// TODO: find the rest of the events to be handled here
-	$(domNode).on('mousedown mouseup click', function (e) {
-		if (e.target === e.currentTarget) {
-			// TODO: send data based on the event type
-			soc.emit( 'input-event', { 
-				tabId: tabId,
-				targetId: id,
-				type: e.type,
-				pageX: e.pageX,
-				pageY: e.pageY,
-				which: e.which
-			});
+	var me = this;
 
+	$(domNode).on('mousedown mouseup click dblclick', function (e) {
+		// mouse events with preventDefault
+		if (e.target === e.currentTarget) {
+			// only send the top level events
+			me.sendMouseEvent(e, id);
 			e.stopPropagation();
 			e.preventDefault();
-		} else {
-			// TODO: debug, remove
-			console.log("propagated event, should not be here: " + id);
 		}
 	});
+
+	$(domNode).on('mouseover mouseout mousemove', function (e) {
+		// mouse events without preventDefault
+		if (e.target === e.currentTarget) {
+			// only send the top level events
+			me.sendMouseEvent(e, id);
+		}
+	});
+	
+};
+
+EventCapturer.prototype.sendMouseEvent = function(e, id) {
+	this.soc.emit( 'input-event', { 
+		tabId: this.tabId,
+		targetId: id,
+		type: e.type,
+		simulateOptions: {
+			clientX: e.pageX,
+			clientY: e.pageY,
+			button: e.originalEvent.button,
+			ctrlKey: e.originalEvent.ctrlKey,
+			altKey: e.originalEvent.altKey,
+			shiftKey: e.originalEvent.shiftKey,
+			metaKey: e.originalEvent.metaKey
+		}
+	});
+	
 };

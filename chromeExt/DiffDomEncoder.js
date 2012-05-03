@@ -264,6 +264,9 @@ DiffDomEncoder.prototype.createJNodeElement = function(domNode) {
 	};
 
 	$(domNode).on("DOMSubtreeModified", res.updateHandler);
+	$(domNode).on("DOMAttrModified", res.updateHandler);
+	$(domNode).on("DOMNodeRemoved", res.updateHandler);
+
 	return res;
 }
 
@@ -281,6 +284,9 @@ DiffDomEncoder.prototype.createJNodeText = function(domNode) {
 		}
 	};
 
-	$(domNode).on("DOMSubtreeModified DOMNodeRemoved", res.updateHandler);
+
+	$(domNode).on("DOMSubtreeModified", res.updateHandler);
+	$(domNode).on("DOMAttrModified", res.updateHandler);
+	$(domNode).on("DOMNodeRemoved", res.updateHandler);
 	return res;
 }

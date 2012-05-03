@@ -11,10 +11,6 @@ function EventDispatcher( getDomFromId ) {
 EventDispatcher.prototype.applyEvent = function ( e ) {
 	// TODO: handle based on the event type
 	var domNode = this.getDomFromId( e.targetId );
-	$( domNode ).simulate( e.type, {
-		clientX: e.pageX,
-		clientY: e.pageY,
-		which: e.which
-	});
+	$( domNode ).simulate( e.type, e.simulateOptions);
 	
 }
