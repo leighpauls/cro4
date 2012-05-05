@@ -206,6 +206,11 @@ DiffDomEncoder.prototype.doDiff = function(rootJNodes) {
 		var domChildren = jNode.domNode.childNodes,
 		i, nextNode;
 
+		for (i = 0; i < jNode.domNode.attributes.length; ++i) {
+			$(jNode.domNode.attributes[i]).unbind('DOMSubtreeModified', jNode.updateHandler);
+			$(jNode.domNode.attributes[i]).on('DOMSubtreeModified', jNode.updateHandler);
+		}
+
 		// TODO: figure out how to prune the jNodeMap without leaving hanging ID's
 		// over a network-round-trip-time input update period
 		// remove all of the event handlers
@@ -261,11 +266,14 @@ DiffDomEncoder.prototype.createJNodeElement = function(domNode) {
 			// update from this node
 			me.modifiedNodes.push(res);
 		}
-	};
+	},
+	i;
 
 	$(domNode).on("DOMSubtreeModified", res.updateHandler);
-	$(domNode).on("DOMAttrModified", res.updateHandler);
-	$(domNode).on("DOMNodeRemoved", res.updateHandler);
+	// add listeners to each of the attributes too
+	for (i = 0; i < domNode.attributes.length; ++i) {
+		$(domNode.attributes[i]).on("DOMSubtreeModified", res.updateHandler);
+	}
 
 	return res;
 }
@@ -286,7 +294,5 @@ DiffDomEncoder.prototype.createJNodeText = function(domNode) {
 
 
 	$(domNode).on("DOMSubtreeModified", res.updateHandler);
-	$(domNode).on("DOMAttrModified", res.updateHandler);
-	$(domNode).on("DOMNodeRemoved", res.updateHandler);
 	return res;
 }
