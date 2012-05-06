@@ -6,16 +6,17 @@ function DiffDomEncoder (updateHandler) {
 	this.modifiedNodes = [];
 
 	// start with the jnode of a blank page
-	this.headJNode = this.createJNodeElement(document.head);
-	var headId = this.headJNode.id;
+	var headId = null;
+	this.jNodeMap = {};
+	if (document.head) {
+		this.jNodeMap[headId] = this.headJNode;
+		this.headJNode = this.createJNodeElement(document.head);
+		headId = this.headJNode.id;
+	}
 
 	this.bodyJNode = this.createJNodeElement(document.body);
 	var bodyId = this.bodyJNode.id;
-
-	this.jNodeMap = {};
-	this.jNodeMap[headId] = this.headJNode;
 	this.jNodeMap[bodyId] = this.bodyJNode;
-
 
 	this.diffInit = {
 		headId: headId,
@@ -44,7 +45,7 @@ DiffDomEncoder.prototype.doUpdateCycle = function() {
 
 DiffDomEncoder.prototype.partialInit = function() {
 	return {
-		headId: this.headJNode.id,
+		headId: (this.headJNode ? this.headJNode.id : null),
 		bodyId: this.bodyJNode.id,
 		diff: this.getLastFullStateDiff(),
 		ocs: location.origin,
@@ -53,10 +54,12 @@ DiffDomEncoder.prototype.partialInit = function() {
 };
 
 DiffDomEncoder.prototype.getLastFullStateDiff = function() {
-	return [
-		DiffDomEncoder.getSendableDiffEntry(this.headJNode),
-		DiffDomEncoder.getSendableDiffEntry(this.bodyJNode)
-	];
+	var res = [];
+	if (this.headJNode) {
+		res.push(DiffDomEncoder.getSendableDiffEntry(this.headJNode));
+	}
+	res.push(DiffDomEncoder.getSendableDiffEntry(this.bodyJNode));
+	return res;
 };
 
 DiffDomEncoder.prototype.getDomNodeFromId = function( id ) {
@@ -98,7 +101,9 @@ DiffDomEncoder.prototype.doDiff = function(rootJNodes) {
 	rootJNodes = rootJNodes || [this.headJNode, this.bodyJNode];
 
 	for (var q = 0; q < rootJNodes.length; ++q) {
-		diffNode(rootJNodes[q]);
+		if (rootJNodes[q]) {
+			diffNode(rootJNodes[q]);
+		}
 	}
 
 	return diffList;
