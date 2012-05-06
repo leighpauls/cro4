@@ -37,7 +37,9 @@ DiffDomDecoder.prototype.clearRootNodes = function() {
 		}
 		// remove the attributes
 		while ( attrs.length > 0 ) {
-			domNode.removeAttribute( attrs[0].nodeName );
+			try {
+				domNode.removeAttribute( attrs[0].nodeName );
+			} catch(e) {}
 		}
 	}
 };
@@ -87,13 +89,17 @@ DiffDomDecoder.prototype.update = function (diffList) {
 		// remove all unspecified attributes
 		for (i = 0; i < domNode.attributes.length; ++i) {
 			if (!diffEntry.attr[domNode.attributes[i].name]) {
-				domNode.removeAttribute(domNode.attributes[i].name);
+				try {
+					domNode.removeAttribute(domNode.attributes[i].name);
+				} catch (e) {}
 			}
 		}
 
 		// set all specified attributes
 		for (curAttrName in diffEntry.attr) {
-			domNode.setAttribute(curAttrName, diffEntry.attr[curAttrName]);
+			try {
+				domNode.setAttribute(curAttrName, diffEntry.attr[curAttrName]);
+			} catch (e) {}
 		}
 		
 		// remove all the existing children

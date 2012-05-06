@@ -1,7 +1,11 @@
-function BossTab(tabInfo, socket, onCloseCb) {
-	this.tabId = tabInfo.tabId;
-	this.socket = socket;
-	this.onCloseCb = onCloseCb;
+function BossTab(args) {
+	if (args.tabInfo) {
+		this.tabId = args.tabInfo.tabId;
+	} else {
+		this.tabId = generateId();
+	}
+	this.socket = args.socket;
+	this.onCloseCb = args.onCloseCb;
 
 	this.chromeTabId = null;
 	this.port = null;
@@ -12,16 +16,22 @@ function BossTab(tabInfo, socket, onCloseCb) {
 
 	var me = this;
 
-	chrome.tabs.create({
-		url: 'http://google.com',
-		active: false
-	}, function (chromeTab) {
+	var chromeTabInit = function(chromeTab) {
 		me.chromeTabId = chromeTab.id;
 		me.reportSelf();
 
 		me.url = chromeTab.url;
 		me.sendUrlUpdate();
-	});
+	}
+	
+	if (args.chromeTab) {
+		chromeTabInit(args.chromeTab);
+	} else {
+		chrome.tabs.create({
+			url: 'http://google.com',
+			active: false
+		}, chromeTabInit);
+	}
 }
 
 BossTab.prototype.onBossOutput = function(request) {
