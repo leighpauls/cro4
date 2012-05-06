@@ -21,8 +21,12 @@ function UrlBarControls(tabManager, socket) {
 	});
 
 	// ask the tab manager to call me whenever the tab has been changed
-	$(this.tabManager).on('tab-changed', function(tabId) {
-		var newValue = me.urls.get(tabId) || "";
+	$(this.tabManager).on('tab-changed', function() {
+		var tabId = me.tabManager.getCurrentTabId(),
+		newValue = "";
+		if (tabId) {
+			newValue = me.urls.get(tabId);
+		}
 		me.setOmniValue(newValue);
 	});
 }

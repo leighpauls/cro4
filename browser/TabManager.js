@@ -79,7 +79,7 @@ TabManager.prototype.selectTab = function(tabId) {
 
 	this.currentTab = selectedTab;
 
-	$(this).trigger('tab-changed', tabId);
+	$(this).trigger('tab-changed');
 };
 
 TabManager.prototype.closeTab = function(tabId) {
@@ -94,6 +94,7 @@ TabManager.prototype.closeTab = function(tabId) {
 	if (this.currentTab === closingTab) {
 		closingTab.unselect();
 		this.currentTab = null;
+		$(this).trigger('tab-changed');
 	}
 	// stop rendering the tab
 	closingTab.remove();
@@ -103,5 +104,8 @@ TabManager.prototype.closeTab = function(tabId) {
 };
 
 TabManager.prototype.getCurrentTabId = function() {
-	return this.currentTab.getTabId();
+	if (this.currentTab) {
+		return this.currentTab.getTabId();
+	}
+	return null;
 };
