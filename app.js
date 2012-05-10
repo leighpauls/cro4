@@ -1,30 +1,33 @@
-var express = require('express');
-var sio = require('socket.io');
-var socketHandler = require('./webapp/socketHandler.js');
-var app = express.createServer();
+exports.runApp = function (portNum) {
 
-app.configure(function() {
-    app.use('/common', express.static(__dirname + '/common'));
-    app.use('/frame', express.static(__dirname + '/frame'));
-    app.use('/browser', express.static(__dirname + '/browser'));
-    app.use(express.logger());
-    app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
-});
+	var express = require('express');
+	var sio = require('socket.io');
+	var socketHandler = require('./webapp/socketHandler.js');
+	var app = express.createServer();
 
-app.get('/', function(req, res) {
-	res.send('hello from express in chromate!!');
-});
+	app.configure(function() {
+		app.use('/common', express.static(__dirname + '/common'));
+		app.use('/frame', express.static(__dirname + '/frame'));
+		app.use('/browser', express.static(__dirname + '/browser'));
+		app.use(express.logger());
+		app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
+	});
 
-// allow socket.io to deliver it's client
-app.listen(80);
+	app.get('/', function(req, res) {
+		res.send('hello from express in chromate!!');
+	});
 
-// actually listen for socket connections
-var io = sio.listen(app);
+	// allow socket.io to deliver it's client
+	app.listen(portNum);
 
-io.configure(function() {
-	io.set('log level', 1);
-});
+	// actually listen for socket connections
+	var io = sio.listen(app);
 
-io.sockets.on('connection', socketHandler.handleSocket);
+	io.configure(function() {
+		io.set('log level', 1);
+	});
+
+	io.sockets.on('connection', socketHandler.handleSocket);
 
 
+};
