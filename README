@@ -1,0 +1,12 @@
+CrO4 is the solution for all of your woes when it comes to browsing the web and owning multiple devices. CrO4 is the first browsing technology to truly harmonize your browsing experience over all of your devices.
+
+Simply put:
+If I own several devices, but they all use the same web, and they all display web pages in (roughly) the same way. So then why is it that when I put down my phone to start browsing on my PC, are the pages that I was looking at not already there? This is where Cro4 comes in to save the day.
+
+CrO4 synchronizes all of your web pages at the DOM-Node level in real-time. That's right, I'll say that part again. DOM-Nodes in real-time.
+
+By taking a the split-browser approach used by Amazon Silk and Opera Mini, and adding server-side JavaScript execution with real-time updating, CrO4 truly unifies your browsing experience by moving the bulk of the browser into the cloud. All of your devices simply become graphic terminals for controlling this one browser and displaying the remotely executed page.
+
+CrO4 is currently implemented as a combination web app for the client side and an instance of vanilla Chromium running an extension on the server side. Yes, you read that right. No software download is required on the client side. A client-side native client may be implemented in the future, but it would only be a browser with it's own native UI stripped away.
+
+A fork of Chromium is currently in development to replace the sever side instance of Chromium by re-implementing the extension functionality directly into the browser, and will potentially have many parts of the browser stripped out. This is to reduce the amount of computation needed on the server side.
