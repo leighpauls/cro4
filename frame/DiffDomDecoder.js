@@ -25,8 +25,7 @@ DiffDomDecoder.prototype.tryReinit = function( diffInit ) {
 DiffDomDecoder.prototype.clearRootNodes = function() {
 	// kill all attributes and added children
 	var thisObject = this;
-	clearNode( document.head );
-	clearNode( document.body );
+	clearNode( document.documentElement );
 
 	function clearNode( domNode ) {
 		var children = domNode.children,
@@ -46,18 +45,12 @@ DiffDomDecoder.prototype.clearRootNodes = function() {
 
 DiffDomDecoder.prototype.configureRootNodes = function( diffInit ) {
 	// create the default root elements
-	this.nodeMap[diffInit.headId] = {
+	this.nodeMap[diffInit.rootId] = {
 		isElem: true,
-		domNode: document.head,
-		id: diffInit.headId
+		domNode: document.documentElement,
+		id: diffInit.rootId
 	};
-	this.headId = diffInit.headId;
-	this.nodeMap[diffInit.bodyId] = {
-		isElem: true,
-		domNode: document.body,
-		id: diffInit.bodyId
-	};
-	this.bodyId = diffInit.bodyId;
+	this.rootId = diffInit.rootId;
 };
 
 // updates the DOM and local data according to the diff

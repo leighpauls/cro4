@@ -41,8 +41,7 @@ tab-created: {
 // boss -> relay -> webapp (scraped) -> frame
 diff-init: {
 	tabId: id,
-	headId: id,
-	bodyId: id,
+	rootId: id,
 	ocs: string,
 	path: string,
 	diff: [jNode],
