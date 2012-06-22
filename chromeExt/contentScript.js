@@ -1,4 +1,5 @@
-$(document).ready(function () {
+//$(document).ready(function () {
+(function() {
 
 	var encoder = new DiffDomEncoder(function(diff) {
 		//console.log(diff);
@@ -31,4 +32,4 @@ $(document).ready(function () {
 			}
 		}
 	});
-});
+})();
