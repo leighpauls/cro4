@@ -3,6 +3,7 @@
 function EventCapturer( soc, tabId ) {
 	this.soc = soc;
 	this.tabId = tabId;
+	
 }
 
 EventCapturer.prototype.attachToNode = function ( domNode, id ) {
@@ -12,23 +13,22 @@ EventCapturer.prototype.attachToNode = function ( domNode, id ) {
 		// mouse events with preventDefault
 		if (e.target === e.currentTarget) {
 			// only send the top level events
-			me.sendMouseEvent(e, id);
+			me.sendInputEvent(e, id);
 			e.stopPropagation();
 			e.preventDefault();
 		}
 	});
 
 	$(domNode).on('mouseover mouseout mousemove', function (e) {
-		// mouse events without preventDefault
+		// events without preventDefault
 		if (e.target === e.currentTarget) {
 			// only send the top level events
-			me.sendMouseEvent(e, id);
+			me.sendInputEvent(e, id);
 		}
-	});
-	
+	});	
 };
 
-EventCapturer.prototype.sendMouseEvent = function(e, id) {
+EventCapturer.prototype.sendInputEvent = function(e, id) {
 	this.soc.emit( 'input-event', { 
 		tabId: this.tabId,
 		targetId: id,

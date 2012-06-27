@@ -7,5 +7,6 @@ $(document).ready(function () {
 	var tabManager = new TabManager(socket);
 	var historyControls = new HistoryControls(tabManager, socket);
 	var urlBarControls = new UrlBarControls(tabManager, socket);
+	var inputCapturer = new InputCapturer(socket, tabManager, urlBarControls);
 	
 });

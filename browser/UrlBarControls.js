@@ -5,12 +5,21 @@ function UrlBarControls(tabManager, socket) {
 
 	this.urls = new StrMap();
 
-	$('.omni-box').on('keydown', function(e) {
-		// on the return key
-		if (e.which == 13) {
-			me.goToUrl( $(e.target).val() );
-		}
-	});
+	this.focused = false;
+
+	$('.omni-box')
+		.on('keydown', function(e) {
+			// on the return key
+			if (e.which == 13) {
+				me.goToUrl( $(e.target).val() );
+			}
+		})
+		.on('focus', function() {
+			me.focused = true;
+		})
+		.on('blur', function() {
+			me.focused = false;
+		});
 
 	this.socket.on('report-tab-url', function(urlInfo) {
 		me.urls.put(urlInfo.tabId, urlInfo.url);
@@ -40,4 +49,8 @@ UrlBarControls.prototype.goToUrl = function(url) {
 		url: url,
 		tabId: this.tabManager.getCurrentTabId()
 	});
+};
+
+UrlBarControls.prototype.hasFocus = function() {
+	return this.focused;
 };

@@ -9,8 +9,17 @@ function EventDispatcher( getDomFromId ) {
 }
 
 EventDispatcher.prototype.applyEvent = function ( e ) {
-	// TODO: handle based on the event type
-	var domNode = this.getDomFromId( e.targetId );
-	$( domNode ).simulate( e.type, e.simulateOptions);
-	
-}
+	// keyboard events need to be handled specifically by cro4 browser features
+	if ( e.type.toLowerCase() === 'keydown' ) {
+		document.cro4FireKeyboardUpDown( e.keyCode, false, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
+	} else if ( e.type.toLowerCase() === 'keyup' ) {
+		document.cro4FireKeyboardUpDown( e.keyCode, true, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
+	} else if ( e.type.toLowerCase() === 'keypress' ) {
+		document.cro4FireKeyboardPress( e.charCode, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
+	} else {
+		// TODO: handle other input events more specifically
+		var domNode = this.getDomFromId( e.targetId );
+		$( domNode ).simulate( e.type, e.simulateOptions);
+	}
+};
+
