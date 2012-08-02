@@ -9,13 +9,18 @@ function EventDispatcher( getDomFromId ) {
 }
 
 EventDispatcher.prototype.applyEvent = function ( e ) {
+	var typeLowerCase = e.type.toLowerCase();
 	// keyboard events need to be handled specifically by cro4 browser features
-	if ( e.type.toLowerCase() === 'keydown' ) {
+	if ( typeLowerCase === 'keydown' ) {
 		document.cro4FireKeyboardUpDown( e.keyCode, false, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
-	} else if ( e.type.toLowerCase() === 'keyup' ) {
+	} else if ( typeLowerCase === 'keyup' ) {
 		document.cro4FireKeyboardUpDown( e.keyCode, true, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
-	} else if ( e.type.toLowerCase() === 'keypress' ) {
+	} else if ( typeLowerCase === 'keypress' ) {
 		document.cro4FireKeyboardPress( e.charCode, e.altKey, e.ctrlKey, e.metaKey, e.shiftKey );
+	} else if ( typeLowerCase === 'resize' ) {
+		// resize the inner panel to these dimensions
+		cro4ResizeTo( e.width + window.outerWidth - window.innerWidth,
+					  e.height + window.outerHeight - window.innerHeight );
 	} else {
 		// TODO: handle other input events more specifically
 		var domNode = this.getDomFromId( e.targetId );

@@ -1,10 +1,24 @@
 // Keeps monitors for input events, and sends them on to the master through the socket
 
 function EventCapturer( soc, tabId ) {
+	var me = this;
 	this.soc = soc;
 	this.tabId = tabId;
-	
+
+	$(window).on('resize', function (e) {
+		me.sendResize();
+	});
 }
+
+EventCapturer.prototype.sendResize = function() {
+	this.soc.emit( 'input-event', {
+		tabId: this.tabId,
+		type: 'resize',
+		width: window.innerWidth,
+		height: window.innerHeight
+	});
+}
+
 
 EventCapturer.prototype.attachToNode = function ( domNode, id ) {
 	var me = this;

@@ -27,10 +27,11 @@ function BossTab(args) {
 	if (args.chromeTab) {
 		chromeTabInit(args.chromeTab);
 	} else {
-		chrome.tabs.create({
-			url: 'http://google.com',
-			active: false
-		}, chromeTabInit);
+		chrome.windows.create({
+			url: 'http://google.com'
+		}, function(window) {
+			chromeTabInit(window.tabs[0]);
+		});
 	}
 }
 
